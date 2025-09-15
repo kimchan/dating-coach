@@ -1,0 +1,182 @@
+
+> kims-dating-coach@0.1.0 start
+> next start
+
+  ▲ Next.js 14.2.5
+  - Local:        http://localhost:3000
+
+ ✓ Starting...
+ ✓ Ready in 179ms
+=== OPENROUTER ENVIRONMENT VARIABLE DEBUGGING ===
+All process.env keys: [
+  'TERM_PROGRAM',
+  'NODE',
+  'INIT_CWD',
+  'SHELL',
+  'TERM',
+  'TMPDIR',
+  'HOMEBREW_REPOSITORY',
+  'npm_config_global_prefix',
+  'TERM_PROGRAM_VERSION',
+  'COLOR',
+  'TERM_SESSION_ID',
+  'npm_config_local_prefix',
+  'USER',
+  'COMMAND_MODE',
+  'npm_config_globalconfig',
+  'SSH_AUTH_SOCK',
+  '__CF_USER_TEXT_ENCODING',
+  'npm_execpath',
+  'TERM_FEATURES',
+  'PAGER',
+  'PATH',
+  'TERMINFO_DIRS',
+  'npm_package_json',
+  '_',
+  'npm_config_userconfig',
+  'npm_config_init_module',
+  '__CFBundleIdentifier',
+  'npm_command',
+  'PWD',
+  'npm_lifecycle_event',
+  'EDITOR',
+  'npm_package_name',
+  'LANG',
+  'ITERM_PROFILE',
+  'npm_config_npm_version',
+  'XPC_FLAGS',
+  'QWEN_CODE',
+  'npm_config_node_gyp',
+  'npm_package_version',
+  'XPC_SERVICE_NAME',
+  'COLORFGBG',
+  'HOME',
+  'SHLVL',
+  'LC_TERMINAL_VERSION',
+  'HOMEBREW_PREFIX',
+  'ITERM_SESSION_ID',
+  'npm_config_cache',
+  'LOGNAME',
+  'npm_lifecycle_script',
+  'npm_config_user_agent',
+  'HOMEBREW_CELLAR',
+  'INFOPATH',
+  'LC_TERMINAL',
+  'npm_node_execpath',
+  'npm_config_prefix',
+  'COLORTERM',
+  'NODE_ENV',
+  'NEXT_RUNTIME',
+  'PORT',
+  '__NEXT_PRIVATE_ORIGIN',
+  'npm_config_noproxy',
+  '__NEXT_PROCESSED_ENV',
+  'OPENROUTER_API_KEY',
+  'OPENROUTER_MODEL',
+  'NEXT_DEPLOYMENT_ID',
+  '__NEXT_OPTIMIZE_FONTS',
+  '__NEXT_PRIVATE_RUNTIME_TYPE'
+]
+process.env keys related to OPENROUTER: [ 'OPENROUTER_API_KEY', 'OPENROUTER_MODEL' ]
+OPENROUTER_API_KEY present: true
+OPENROUTER_API_KEY value: sk-or-v1-f...
+OPENROUTER_MODEL: qwen/qwen3-coder:free
+==================================================
+API route called
+Received bio: I love hiking and tacos
+Calling analyzeBio function
+=== ANALYZEBIO FUNCTION DEBUGGING ===
+analyzeBio called with bio: I love hiking and tacos
+OPENROUTER_API_KEY available in function: true
+OPENROUTER_API_KEY value: sk-or-v1-f...
+OPENROUTER_MODEL value: qwen/qwen3-coder:free
+Running on server: true
+All env vars keys: [ 'OPENROUTER_API_KEY', 'OPENROUTER_MODEL' ]
+Process env OPENROUTER_API_KEY: sk-or-v1-f...
+=====================================
+Using ACTUAL LLM for analysis
+Making request to: https://openrouter.ai/api/v1/chat/completions
+Using model: qwen/qwen3-coder:free
+Error analyzing bio: Error: API request failed with status 429
+    at h (/Users/kimberlychan/Development/kims-dating-coach/.next/server/app/api/analyze-bio/route.js:65:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async d (/Users/kimberlychan/Development/kims-dating-coach/.next/server/app/api/analyze-bio/route.js:65:2745)
+    at async /Users/kimberlychan/Development/kims-dating-coach/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:36258
+    at async eR.execute (/Users/kimberlychan/Development/kims-dating-coach/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:26874)
+    at async eR.handle (/Users/kimberlychan/Development/kims-dating-coach/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:37512)
+    at async doRender (/Users/kimberlychan/Development/kims-dating-coach/node_modules/next/dist/server/base-server.js:1377:42)
+    at async cacheEntry.responseCache.get.routeKind (/Users/kimberlychan/Development/kims-dating-coach/node_modules/next/dist/server/base-server.js:1599:28)
+    at async NextNodeServer.renderToResponseWithComponentsImpl (/Users/kimberlychan/Development/kims-dating-coach/node_modules/next/dist/server/base-server.js:1507:28)
+    at async NextNodeServer.renderPageComponent (/Users/kimberlychan/Development/kims-dating-coach/node_modules/next/dist/server/base-server.js:1931:24)
+Analysis completed, sending response: {
+  score: 45,
+  strengths: [ 'You took the time to write something' ],
+  improvements: [
+    'Share specific details about your actual interests and experiences',
+    "Include what you're genuinely looking for in a match",
+    'Add a conversation starter to engage potential matches'
+  ],
+  overall: "Your bio needs more specific details about who you are and what you're looking for. Generic statements don't help potential matches get to know the real you.",
+  recommendedBio: 'Weekend warrior who once got lost for 6 hours but still made it back with an amazing sunset photo 📸\n' +
+    'Looking for someone who can laugh at my terrible sense of direction and enjoys spontaneous adventures.\n' +
+    '\n' +
+    "What's the weirdest thing you've seen on an adventure?"
+}
+API route called
+Received bio: I love hiking mountains and eating tacos
+Calling analyzeBio function
+=== ANALYZEBIO FUNCTION DEBUGGING ===
+analyzeBio called with bio: I love hiking mountains and eating tacos
+OPENROUTER_API_KEY available in function: true
+OPENROUTER_API_KEY value: sk-or-v1-f...
+OPENROUTER_MODEL value: qwen/qwen3-coder:free
+Running on server: true
+All env vars keys: [ 'OPENROUTER_API_KEY', 'OPENROUTER_MODEL' ]
+Process env OPENROUTER_API_KEY: sk-or-v1-f...
+=====================================
+Using ACTUAL LLM for analysis
+Making request to: https://openrouter.ai/api/v1/chat/completions
+Using model: qwen/qwen3-coder:free
+Raw API response: {
+  "id": "gen-1757865523-2Zqdu2TOw83GFihWxOfK",
+  "provider": "Chutes",
+  "model": "qwen/qwen3-coder:free",
+  "object": "chat.completion",
+  "created": 1757865523,
+  "choices": [
+    {
+      "logprobs": null,
+      "finish_reason": "stop",
+      "native_finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\n  \"score\": 35,\n  \"strengths\": [\n    \"Mentions specific interests that could appeal to like-minded people\",\n    \"Concise and easy to read\"\n  ],\n  \"improvements\": [\n    \"Very short length with minimal content shows little effort\",\n    \"Uses common interests (hiking, tacos) without personal context\",\n    \"Lacks personality expression or unique details\",\n    \"No clear indication of what they're looking for\",\n    \"Missing conversation starters or engaging elements\"\n  ],\n  \"overall\": \"This bio is extremely brief and lacks the depth needed to generate meaningful matches. While mentioning hiking and tacos shows basic interests, the bio provides no real insight into your personality or what you're seeking. The generic nature of these interests without personal context makes it difficult for potential matches to connect with you.\",\n  \"recommendedBio\": \"Adventure seeker who believes the best views come after the steepest climbs, and the perfect post-hike reward is a great taco. Looking for someone who enjoys exploring new trails and trying hidden local spots. What's your go-to hiking snack?\"\n}",
+        "refusal": null,
+        "reasoning": null
+      }
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 603,
+    "completion_tokens": 229,
+    "total_tokens": 832,
+    "prompt_tokens_details": null
+  }
+}
+Analysis completed, sending response: {
+  score: 35,
+  strengths: [
+    'Mentions specific interests that could appeal to like-minded people',
+    'Concise and easy to read'
+  ],
+  improvements: [
+    'Very short length with minimal content shows little effort',
+    'Uses common interests (hiking, tacos) without personal context',
+    'Lacks personality expression or unique details',
+    "No clear indication of what they're looking for",
+    'Missing conversation starters or engaging elements'
+  ],
+  overall: "This bio is extremely brief and lacks the depth needed to generate meaningful matches. While mentioning hiking and tacos shows basic interests, the bio provides no real insight into your personality or what you're seeking. The generic nature of these interests without personal context makes it difficult for potential matches to connect with you.",
+  recommendedBio: "Adventure seeker who believes the best views come after the steepest climbs, and the perfect post-hike reward is a great taco. Looking for someone who enjoys exploring new trails and trying hidden local spots. What's your go-to hiking snack?"
+}
