@@ -8,7 +8,7 @@ A web application that analyzes dating app bios using AI and provides feedback f
 - Receive a score out of 100 for your bio (with very low-effort bios scoring below 30)
 - Get personalized strengths and suggestions for improvement
 - Copy recommended bios to clipboard with one click
-- Refresh to generate new variations of recommended bios
+- Refresh to generate new variations of recommended bios using the actual LLM
 - Edit and reanalyze your bio directly in the text box
 - Responsive design that works on all devices
 - Fixed hydration error by ensuring consistent DOM structure between server and client renders
