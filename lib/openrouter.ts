@@ -15,9 +15,19 @@ export interface AnalysisResult {
   improvements: string[];
   overall: string;
   recommendedBio: string;
+  isGenerated?: boolean; // Optional flag to indicate if this is a generated bio
 }
 
-export async function analyzeBio(bio: string): Promise<AnalysisResult> {
+// Additional options for bio generation
+export interface BioOptions {
+  customPrompt?: string;
+}
+
+export async function analyzeBio(bio: string, options?: BioOptions): Promise<AnalysisResult> {
+  console.log("=== ANALYZEBIO FUNCTION STARTED ===");
+  console.log("BIO PARAMETER:", bio.substring(0, 100) + (bio.length > 100 ? "..." : ""));
+  console.log("OPTIONS PARAMETER:", JSON.stringify(options));
+  
   // Load environment variables inside the function to ensure they're available
   const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
   const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL;
@@ -39,11 +49,44 @@ export async function analyzeBio(bio: string): Promise<AnalysisResult> {
   console.log("=====================================");
   
   // Check if we have both the API key and model
+  console.log("Checking API key and model availability:");
+  console.log("- OPENROUTER_API_KEY value:", OPENROUTER_API_KEY);
+  console.log("- OPENROUTER_API_KEY type:", typeof OPENROUTER_API_KEY);
+  console.log("- OPENROUTER_API_KEY length:", OPENROUTER_API_KEY ? OPENROUTER_API_KEY.length : 'undefined');
+  console.log("- OPENROUTER_MODEL value:", OPENROUTER_MODEL);
+  console.log("- OPENROUTER_MODEL type:", typeof OPENROUTER_MODEL);
+  
+  // Add specific checks for falsy values
+  console.log("- OPENROUTER_API_KEY is falsy:", !OPENROUTER_API_KEY);
+  console.log("- OPENROUTER_MODEL is falsy:", !OPENROUTER_MODEL);
+  console.log("- OPENROUTER_API_KEY strict equality to undefined:", OPENROUTER_API_KEY === undefined);
+  console.log("- OPENROUTER_API_KEY strict equality to null:", OPENROUTER_API_KEY === null);
+  console.log("- OPENROUTER_MODEL strict equality to undefined:", OPENROUTER_MODEL === undefined);
+  console.log("- OPENROUTER_MODEL strict equality to null:", OPENROUTER_MODEL === null);
+  
   if (!OPENROUTER_API_KEY || !OPENROUTER_MODEL) {
-    console.log("Using MOCK DATA because either OPENROUTER_API_KEY or OPENROUTER_MODEL is not set");
+    console.log("Using MOCK DATA because either OPENROUTER_API_KEY or OPENROUTER_MODEL is not set or falsy");
     console.log("OPENROUTER_API_KEY present:", !!OPENROUTER_API_KEY);
     console.log("OPENROUTER_MODEL present:", !!OPENROUTER_MODEL);
     console.log("OPENROUTER_MODEL value:", OPENROUTER_MODEL || 'undefined');
+    
+    // Add more specific debugging for why it's falsy
+    if (!OPENROUTER_API_KEY) {
+      console.log("OPENROUTER_API_KEY is falsy because:", 
+        OPENROUTER_API_KEY === undefined ? "it's undefined" :
+        OPENROUTER_API_KEY === null ? "it's null" :
+        OPENROUTER_API_KEY === "" ? "it's an empty string" :
+        "unknown reason");
+    }
+    
+    if (!OPENROUTER_MODEL) {
+      console.log("OPENROUTER_MODEL is falsy because:", 
+        OPENROUTER_MODEL === undefined ? "it's undefined" :
+        OPENROUTER_MODEL === null ? "it's null" :
+        OPENROUTER_MODEL === "" ? "it's an empty string" :
+        "unknown reason");
+    }
+    
     // Return mock data based on actual input
     if (bio.trim().length === 0) {
       return {
@@ -55,10 +98,8 @@ export async function analyzeBio(bio: string): Promise<AnalysisResult> {
           "Add a conversation starter question to encourage responses"
         ],
         overall: "An empty bio is the worst possible approach on dating apps. You need to share something about yourself to attract potential matches.",
-        recommendedBio: `Weekend warrior who once got lost for 6 hours but still made it back with an amazing sunset photo \uD83D\uDCF8
-Looking for someone who can laugh at my terrible sense of direction and enjoys spontaneous adventures.
-
-What's the weirdest thing you've seen on an adventure?`
+        recommendedBio: "Weekend warrior who once got lost for 6 hours but still made it back with an amazing sunset photo \uD83D\uDCF8\nLooking for someone who can laugh at my terrible sense of direction and enjoys spontaneous adventures.\n\nWhat's the weirdest thing you've seen on an adventure?",
+        isGenerated: false
       };
     }
     
@@ -74,11 +115,8 @@ What's the weirdest thing you've seen on an adventure?`
           "Add a conversation starter question to encourage responses"
         ],
         overall: "Your bio is just a greeting with minimal content, which doesn't tell potential matches anything about you. A good dating bio should share specific details about your personality, interests, and what you're looking for.",
-        recommendedBio: `Hi! I'm a weekend adventurer who's either hiking trails or trying new coffee shops.
-Currently obsessed with finding the city's best tacos and terrible at karaoke.
-Looking for someone who can handle my dad jokes and spontaneous dance parties.
-
-What's the most random thing you're passionate about?`
+        recommendedBio: "Hi! I'm a weekend adventurer who's either hiking trails or trying new coffee shops.\nCurrently obsessed with finding the city's best tacos and terrible at karaoke.\nLooking for someone who can handle my dad jokes and spontaneous dance parties.\n\nWhat's the most random thing you're passionate about?",
+        isGenerated: false
       };
     }
     
@@ -94,10 +132,8 @@ What's the most random thing you're passionate about?`
         "Add a conversation starter to engage potential matches"
       ],
       overall: "Your bio needs more specific details about who you are and what you're looking for. Generic statements don't help potential matches get to know the real you.",
-      recommendedBio: `Weekend warrior who once got lost for 6 hours but still made it back with an amazing sunset photo \uD83D\uDCF8
-Looking for someone who can laugh at my terrible sense of direction and enjoys spontaneous adventures.
-
-What's the weirdest thing you've seen on an adventure?`
+      recommendedBio: "Weekend warrior who once got lost for 6 hours but still made it back with an amazing sunset photo \uD83D\uDCF8\nLooking for someone who can laugh at my terrible sense of direction and enjoys spontaneous adventures.\n\nWhat's the weirdest thing you've seen on an adventure?",
+        isGenerated: false
     };
   }
 
@@ -118,7 +154,14 @@ What's the weirdest thing you've seen on an adventure?`
         messages: [
           {
             role: "system",
-            content: `You are a highly experienced dating coach who evaluates dating app bios using a strict but fair scoring system based on proven effectiveness principles.
+            content: options?.customPrompt 
+              ? `${options.customPrompt}
+
+IMPORTANT: Return your response as a JSON object with this exact structure:
+{
+  "bio": "generated bio text"
+}`
+              : `You are a highly experienced dating coach who evaluates dating app bios using a strict but fair scoring system based on proven effectiveness principles.
 
 SCORING STRATEGY (Max 100 points):
 1. CLARITY & PURPOSE (25 points)
@@ -174,7 +217,9 @@ The user's actual bio is provided in the next message. Analyze ONLY that content
           },
           {
             role: "user",
-            content: `Here is the dating app bio to analyze:
+            content: options?.customPrompt 
+              ? bio // For bio generation, the bio parameter contains the user details
+              : `Here is the dating app bio to analyze:
 
 ${bio}`
           }
@@ -223,19 +268,50 @@ ${bio}`
     }
     
     // Validate that we have the expected structure
-    if (!analysis.score || !Array.isArray(analysis.strengths) || !Array.isArray(analysis.improvements) || !analysis.overall || !analysis.recommendedBio) {
-      throw new Error("LLM response does not have the expected structure");
+    if (options?.customPrompt) {
+      // For bio generation, we expect a "bio" property
+      if (!analysis.bio) {
+        throw new Error("LLM response does not have the expected structure for bio generation");
+      }
+      
+      // Return a mock analysis result with the generated bio
+      return {
+        score: 85, // High score for generated bio
+        strengths: [
+          "Uses selected tones effectively",
+          "Incorporates interests naturally"
+        ],
+        improvements: [
+          "Consider adding a conversation starter question"
+        ],
+        overall: "Great start! This bio effectively uses your selected tones and incorporates your interests in a natural way.",
+        recommendedBio: analysis.bio,
+        isGenerated: true // Flag to indicate this is a generated bio
+      };
+    } else {
+      // For bio analysis, we expect the full analysis structure
+      if (!analysis.score || !Array.isArray(analysis.strengths) || !Array.isArray(analysis.improvements) || !analysis.overall || !analysis.recommendedBio) {
+        throw new Error("LLM response does not have the expected structure for bio analysis");
+      }
+      
+      return {
+        score: analysis.score,
+        strengths: analysis.strengths,
+        improvements: analysis.improvements,
+        overall: analysis.overall,
+        recommendedBio: analysis.recommendedBio
+      };
     }
-    
-    return {
-      score: analysis.score,
-      strengths: analysis.strengths,
-      improvements: analysis.improvements,
-      overall: analysis.overall,
-      recommendedBio: analysis.recommendedBio
-    };
   } catch (error) {
     console.error("Error analyzing bio:", error);
+    console.error("Error type:", error.constructor.name);
+    console.error("Error message:", error.message);
+    
+    // Check if it's a specific error we can handle
+    if (error.message && error.message.includes('API request failed')) {
+      console.error("API request error - likely network or authentication issue");
+    }
+    
     // Return mock data based on actual input
     if (bio.trim().length === 0) {
       return {
@@ -247,10 +323,8 @@ ${bio}`
           "Add a conversation starter question to encourage responses"
         ],
         overall: "An empty bio is the worst possible approach on dating apps. You need to share something about yourself to attract potential matches.",
-        recommendedBio: `Weekend warrior who once got lost for 6 hours but still made it back with an amazing sunset photo \ud83d\udcf8
-Looking for someone who can laugh at my terrible sense of direction and enjoys spontaneous adventures.
-
-What's the weirdest thing you've seen on an adventure?`
+        recommendedBio: "Weekend warrior who once got lost for 6 hours but still made it back with an amazing sunset photo \uD83D\uDCF8\nLooking for someone who can laugh at my terrible sense of direction and enjoys spontaneous adventures.\n\nWhat's the weirdest thing you've seen on an adventure?",
+        isGenerated: false
       };
     }
     
@@ -266,11 +340,8 @@ What's the weirdest thing you've seen on an adventure?`
           "Add a conversation starter question to encourage responses"
         ],
         overall: "Your bio is just a greeting with minimal content, which doesn't tell potential matches anything about you. A good dating bio should share specific details about your personality, interests, and what you're looking for.",
-        recommendedBio: `Hi! I'm a weekend adventurer who's either hiking trails or trying new coffee shops.
-Currently obsessed with finding the city's best tacos and terrible at karaoke.
-Looking for someone who can handle my dad jokes and spontaneous dance parties.
-
-What's the most random thing you're passionate about?`
+        recommendedBio: "Hi! I'm a weekend adventurer who's either hiking trails or trying new coffee shops.\nCurrently obsessed with finding the city's best tacos and terrible at karaoke.\nLooking for someone who can handle my dad jokes and spontaneous dance parties.\n\nWhat's the most random thing you're passionate about?",
+        isGenerated: false
       };
     }
     
@@ -286,10 +357,8 @@ What's the most random thing you're passionate about?`
         "Add a conversation starter to engage potential matches"
       ],
       overall: "Your bio needs more specific details about who you are and what you're looking for. Generic statements don't help potential matches get to know the real you.",
-      recommendedBio: `Weekend warrior who once got lost for 6 hours but still made it back with an amazing sunset photo \ud83d\udcf8
-Looking for someone who can laugh at my terrible sense of direction and enjoys spontaneous adventures.
-
-What's the weirdest thing you've seen on an adventure?`
+      recommendedBio: "Weekend warrior who once got lost for 6 hours but still made it back with an amazing sunset photo \uD83D\uDCF8\nLooking for someone who can laugh at my terrible sense of direction and enjoys spontaneous adventures.\n\nWhat's the weirdest thing you've seen on an adventure?",
+        isGenerated: false
     };
   }
 }
