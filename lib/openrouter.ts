@@ -1,15 +1,12 @@
 // API utility for OpenRouter integration
-const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
-const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL; // No fallback, only use what's in .env.local
 const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
 
 // Detailed logging for debugging
 console.log("=== OPENROUTER ENVIRONMENT VARIABLE DEBUGGING ===");
 console.log("All process.env keys:", Object.keys(process.env));
 console.log("process.env keys related to OPENROUTER:", Object.keys(process.env).filter(key => key.includes('OPENROUTER')));
-console.log("OPENROUTER_API_KEY present:", !!OPENROUTER_API_KEY);
-console.log("OPENROUTER_API_KEY value:", OPENROUTER_API_KEY ? `${OPENROUTER_API_KEY.substring(0, 10)}...` : 'undefined');
-console.log("OPENROUTER_MODEL:", OPENROUTER_MODEL);
+console.log("OPENROUTER_API_KEY:", process.env.OPENROUTER_API_KEY ? `${process.env.OPENROUTER_API_KEY.substring(0, 10)}...` : 'undefined');
+console.log("OPENROUTER_MODEL:", process.env.OPENROUTER_MODEL || 'undefined');
 console.log("==================================================");
 
 export interface AnalysisResult {
@@ -21,6 +18,10 @@ export interface AnalysisResult {
 }
 
 export async function analyzeBio(bio: string): Promise<AnalysisResult> {
+  // Load environment variables inside the function to ensure they're available
+  const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
+  const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL;
+  
   console.log("=== ANALYZEBIO FUNCTION DEBUGGING ===");
   console.log("analyzeBio called with bio:", bio);
   console.log("OPENROUTER_API_KEY available in function:", !!OPENROUTER_API_KEY);
@@ -34,14 +35,15 @@ export async function analyzeBio(bio: string): Promise<AnalysisResult> {
   // Additional logging to debug environment variable loading
   console.log("All env vars keys:", Object.keys(process.env).filter(key => key.includes('OPENROUTER')));
   console.log("Process env OPENROUTER_API_KEY:", process.env.OPENROUTER_API_KEY ? `${process.env.OPENROUTER_API_KEY.substring(0, 10)}...` : 'undefined');
+  console.log("Process env OPENROUTER_MODEL:", process.env.OPENROUTER_MODEL || 'undefined');
   console.log("=====================================");
   
   // Check if we have both the API key and model
   if (!OPENROUTER_API_KEY || !OPENROUTER_MODEL) {
-    console.log("Using MOCK DATA because either OPENROUTER_API_KEY or OPENROUTER_MODEL is not set or is falsy");
+    console.log("Using MOCK DATA because either OPENROUTER_API_KEY or OPENROUTER_MODEL is not set");
     console.log("OPENROUTER_API_KEY present:", !!OPENROUTER_API_KEY);
     console.log("OPENROUTER_MODEL present:", !!OPENROUTER_MODEL);
-    console.log("OPENROUTER_MODEL value:", OPENROUTER_MODEL);
+    console.log("OPENROUTER_MODEL value:", OPENROUTER_MODEL || 'undefined');
     // Return mock data based on actual input
     if (bio.trim().length === 0) {
       return {
@@ -53,7 +55,7 @@ export async function analyzeBio(bio: string): Promise<AnalysisResult> {
           "Add a conversation starter question to encourage responses"
         ],
         overall: "An empty bio is the worst possible approach on dating apps. You need to share something about yourself to attract potential matches.",
-        recommendedBio: `Weekend warrior who once got lost for 6 hours but still made it back with an amazing sunset photo \ud83d\udcf8
+        recommendedBio: `Weekend warrior who once got lost for 6 hours but still made it back with an amazing sunset photo \uD83D\uDCF8
 Looking for someone who can laugh at my terrible sense of direction and enjoys spontaneous adventures.
 
 What's the weirdest thing you've seen on an adventure?`
@@ -92,7 +94,7 @@ What's the most random thing you're passionate about?`
         "Add a conversation starter to engage potential matches"
       ],
       overall: "Your bio needs more specific details about who you are and what you're looking for. Generic statements don't help potential matches get to know the real you.",
-      recommendedBio: `Weekend warrior who once got lost for 6 hours but still made it back with an amazing sunset photo \ud83d\udcf8
+      recommendedBio: `Weekend warrior who once got lost for 6 hours but still made it back with an amazing sunset photo \uD83D\uDCF8
 Looking for someone who can laugh at my terrible sense of direction and enjoys spontaneous adventures.
 
 What's the weirdest thing you've seen on an adventure?`
@@ -132,7 +134,7 @@ SCORING STRATEGY (Max 100 points):
 3. AUTHENTICITY (25 points)
    - Genuine personality expression
    - Specific examples over generic statements
-   - Avoidance of clich\\u00e9s and overused phrases
+   - Avoidance of clichés and overused phrases
 
 4. PRESENTATION (25 points)
    - Good grammar and spelling
@@ -172,7 +174,9 @@ The user's actual bio is provided in the next message. Analyze ONLY that content
           },
           {
             role: "user",
-            content: `Here is the dating app bio to analyze:\n\n${bio}`
+            content: `Here is the dating app bio to analyze:
+
+${bio}`
           }
         ],
         temperature: 0.7,
@@ -243,7 +247,30 @@ The user's actual bio is provided in the next message. Analyze ONLY that content
           "Add a conversation starter question to encourage responses"
         ],
         overall: "An empty bio is the worst possible approach on dating apps. You need to share something about yourself to attract potential matches.",
-        recommendedBio: "Weekend warrior who once got lost for 6 hours but still made it back with an amazing sunset photo \\ud83d\\udcf8\nLooking for someone who can laugh at my terrible sense of direction and enjoys spontaneous adventures.\n\nWhat's the weirdest thing you've seen on an adventure?"
+        recommendedBio: `Weekend warrior who once got lost for 6 hours but still made it back with an amazing sunset photo \ud83d\udcf8
+Looking for someone who can laugh at my terrible sense of direction and enjoys spontaneous adventures.
+
+What's the weirdest thing you've seen on an adventure?`
+      };
+    }
+    
+    if (bio.toLowerCase().includes('hi') && bio.trim().length < 10) {
+      return {
+        score: 25,
+        strengths: [
+          "You started with a friendly greeting"
+        ],
+        improvements: [
+          "A dating bio needs much more than just a greeting - share who you are and what you're looking for",
+          "Include specific interests or hobbies to give people something to connect with",
+          "Add a conversation starter question to encourage responses"
+        ],
+        overall: "Your bio is just a greeting with minimal content, which doesn't tell potential matches anything about you. A good dating bio should share specific details about your personality, interests, and what you're looking for.",
+        recommendedBio: `Hi! I'm a weekend adventurer who's either hiking trails or trying new coffee shops.
+Currently obsessed with finding the city's best tacos and terrible at karaoke.
+Looking for someone who can handle my dad jokes and spontaneous dance parties.
+
+What's the most random thing you're passionate about?`
       };
     }
     
@@ -259,7 +286,10 @@ The user's actual bio is provided in the next message. Analyze ONLY that content
         "Add a conversation starter to engage potential matches"
       ],
       overall: "Your bio needs more specific details about who you are and what you're looking for. Generic statements don't help potential matches get to know the real you.",
-      recommendedBio: "Weekend warrior who once got lost for 6 hours but still made it back with an amazing sunset photo \\ud83d\\udcf8\nLooking for someone who can laugh at my terrible sense of direction and enjoys spontaneous adventures.\n\nWhat's the weirdest thing you've seen on an adventure?"
+      recommendedBio: `Weekend warrior who once got lost for 6 hours but still made it back with an amazing sunset photo \ud83d\udcf8
+Looking for someone who can laugh at my terrible sense of direction and enjoys spontaneous adventures.
+
+What's the weirdest thing you've seen on an adventure?`
     };
   }
 }
