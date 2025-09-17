@@ -105,7 +105,7 @@ export async function analyzeBio(bio: string, options?: BioOptions): Promise<Ana
     
     if (bio.toLowerCase().includes('hi') && bio.trim().length < 10) {
       return {
-        score: 25,
+        score: Math.floor(Math.random() * 10) + 1, // Random score between 1-10 for mock data
         strengths: [
           "You started with a friendly greeting"
         ],
@@ -116,13 +116,13 @@ export async function analyzeBio(bio: string, options?: BioOptions): Promise<Ana
         ],
         overall: "Your bio is just a greeting with minimal content, which doesn't tell potential matches anything about you. A good dating bio should share specific details about your personality, interests, and what you're looking for.",
         recommendedBio: "Hi! I'm a weekend adventurer who's either hiking trails or trying new coffee shops.\nCurrently obsessed with finding the city's best tacos and terrible at karaoke.\nLooking for someone who can handle my dad jokes and spontaneous dance parties.\n\nWhat's the most random thing you're passionate about?",
-        isGenerated: false
+        isMockData: true // Boolean flag to indicate this is mock data
       };
     }
     
     // Generic fallback for other inputs
     return {
-      score: 45,
+      score: Math.floor(Math.random() * 10) + 1, // Random score between 1-10 for mock data
       strengths: [
         "You took the time to write something"
       ],
@@ -133,7 +133,7 @@ export async function analyzeBio(bio: string, options?: BioOptions): Promise<Ana
       ],
       overall: "Your bio needs more specific details about who you are and what you're looking for. Generic statements don't help potential matches get to know the real you.",
       recommendedBio: "Weekend warrior who once got lost for 6 hours but still made it back with an amazing sunset photo \uD83D\uDCF8\nLooking for someone who can laugh at my terrible sense of direction and enjoys spontaneous adventures.\n\nWhat's the weirdest thing you've seen on an adventure?",
-        isGenerated: false
+        isMockData: true // Boolean flag to indicate this is mock data
     };
   }
 
@@ -330,7 +330,7 @@ ${bio}`
     
     if (bio.toLowerCase().includes('hi') && bio.trim().length < 10) {
       return {
-        score: 25,
+        score: Math.floor(Math.random() * 10) + 1, // Random score between 1-10 for mock data
         strengths: [
           "You started with a friendly greeting"
         ],
@@ -347,7 +347,7 @@ ${bio}`
     
     // Generic fallback for other inputs
     return {
-      score: 45,
+      score: Math.floor(Math.random() * 10) + 1, // Random score between 1-10 for mock data
       strengths: [
         "You took the time to write something"
       ],
@@ -358,7 +358,7 @@ ${bio}`
       ],
       overall: "Your bio needs more specific details about who you are and what you're looking for. Generic statements don't help potential matches get to know the real you.",
       recommendedBio: "Weekend warrior who once got lost for 6 hours but still made it back with an amazing sunset photo \uD83D\uDCF8\nLooking for someone who can laugh at my terrible sense of direction and enjoys spontaneous adventures.\n\nWhat's the weirdest thing you've seen on an adventure?",
-        isGenerated: false
+        isMockData: true // Boolean flag to indicate this is mock data
     };
   }
 }

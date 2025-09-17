@@ -55,11 +55,11 @@ Handles communication with the OpenRouter API:
   4. Presentation
 - Implements a stringent scoring strategy where very low-effort bios (e.g., just "Hi") score below 30
 - Implements fallback mock data when API key is not configured
-- Uses `deepseek/deepseek-chat-v3.1:free` as the default model
+- Uses `openrouter/sonoma-dusk-alpha` as the default model
 
 ## Environment Variables
 - `OPENROUTER_API_KEY`: Required for AI analysis features
-- `OPENROUTER_MODEL`: Optional, defaults to "deepseek/deepseek-chat-v3.1:free"
+- `OPENROUTER_MODEL`: Optional, defaults to "openrouter/sonoma-dusk-alpha"
 
 ## Development Workflow
 
@@ -112,39 +112,27 @@ The project uses Playwright for end-to-end testing with tests located in the `te
 - The AI analysis is powered by OpenRouter API with a detailed prompt engineering approach
 - Playwright is configured to start the development server automatically when running tests
 
-## Qwen Added Memories
-- Fixed hydration error in BioAnalyzer component by ensuring consistent DOM structure between server and client renders. Wrapped conditional content in a consistent container structure and used CSS classes to control visibility instead of conditional rendering.
-- Updated UI layout with several improvements:
-1. Removed "Analysis Results" and "Your Bio Score" text and score circle display
-2. Moved overall feedback to its own third column (1/3 width) on the right
-3. Moved recommended bio to a new row at the bottom underneath the 3 columns
-4. Adjusted column heights to fit content naturally without artificial stretching
-5. Shortened the "Your Dating Bio" text box to 6 rows (matching other columns)
-6. Removed icons and color coding from section titles while keeping them in list items
-7. Reduced width of "How We Score Dating Bios" section with max-w-3xl
-8. Information icon moved inline with the title
-9. Initial text box made smaller to reduce scrolling
-- Updated UI layout with several improvements:
-1. Removed "Analysis Results" and "Your Bio Score" text and score circle display
-2. Moved overall feedback to its own third column (1/3 width) on the right
-3. Moved recommended bio to a new row at the bottom underneath the 3 columns
-4. Adjusted column heights to fit content naturally without artificial stretching
-5. Shortened the "Your Dating Bio" text box to 6 rows (matching other columns)
-6. Removed icons and color coding from section titles while keeping them in list items
-7. Reduced width of "How We Score Dating Bios" section with max-w-3xl
-8. Information icon moved inline with the title
-9. Initial text box made smaller to reduce scrolling
-- Implemented animated progress ring with gamified elements for displaying dating bio scores:
-1. Created ScoreRing component with animated circular progress indicator
-2. Added gamified avatars/emojis that change based on score ranges:
-   - 90-100: 👑 Dating Guru
-   - 75-89: 🌟 Charm Master
-   - 60-74: 👍 Social Butterfly
-   - 45-59: 🤔 Work in Progress
-   - 30-44: 🐣 Newbie
-   - 0-29: 🥚 Just Starting
-3. Added descriptive labels and encouraging messages for each score range
-4. Integrated with overall feedback section in the three-column layout
-5. Created test page at /test-score-ring to demonstrate different score ranges
-6. Added smooth animations and transitions for delightful user experience
-- Removed the animated progress ring with gamified elements feature. Reverted to the previous implementation which focuses on the core functionality of analyzing dating bios and providing feedback without additional gamification elements. The application maintains its clean, professional appearance while still providing all the essential features for improving dating profiles.
+## Recent Changes and Fixes
+
+### Fixed Hydration Issues in BioAnalyzer Component
+Resolved React hydration errors that were occurring due to inconsistent DOM structure between server and client renders:
+- Implemented consistent DOM structure by always rendering the same number of elements
+- Used CSS classes (`hidden`) instead of conditional rendering to show/hide elements
+- Made list rendering consistent by always rendering a fixed number of items
+- Added proper hydration handling to ensure consistent client-side behavior
+
+### Fixed Mock Data Issue - Now Calling Actual LLM
+Resolved issue where the application was using mock data instead of calling the actual LLM:
+- Fixed environment variable loading within the function scope
+- Ensured proper checking for both API key and model before using mock data
+- Added detailed logging to verify that the LLM is being called correctly
+- Confirmed that the API returns realistic LLM-generated scores (30-85) instead of mock data scores (0, 25, 45)
+
+### Verified Complete Application Flow
+Confirmed that the complete application flow works correctly:
+- Frontend loads without hydration errors
+- API correctly calls the LLM and returns real analysis
+- LLM returns realistic scores and personalized feedback
+- End-to-end functionality works from user input to LLM-generated recommendations
+
+The application is now working correctly with both issues resolved. Users can successfully get AI-powered feedback on their dating app bios through the complete flow, with the application correctly calling the LLM and returning personalized, meaningful analysis.
